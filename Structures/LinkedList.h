@@ -100,6 +100,17 @@ void LinkedList<DT>::addAt(DT* newVal, int index)
 	newNode->data = new DT[1];
 	mem_cpy(newVal, newNode->data, sizeof(DT));
 
+	//Increment the length
+	this->length++;
+
+	//Add at front if index is zero
+	if(index == 0)
+	{
+		newNode->next = this->head;
+		this->head = newNode;
+		return;
+	}
+
 	//Iterate to the desired index
 	LinkedListNode* current = this->head;
 	while(current != NULL && index > 1)
@@ -111,9 +122,6 @@ void LinkedList<DT>::addAt(DT* newVal, int index)
 	//Insert the node
 	newNode->next = current->next;
 	current->next = newNode;
-
-	//Increment the length
-	this->length++;
 }
 
 /*Remove from the end of the list*/
