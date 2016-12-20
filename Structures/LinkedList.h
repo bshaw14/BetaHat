@@ -1,6 +1,7 @@
 /*Author: Austin Graham*/
+#ifndef LINKEDLIST_H
+#define LINKEDLIST_H
 #include"../memory.h"
-using namespace std;
 
 /*Data structure storing items of a certain type
 into a list*/
@@ -68,7 +69,8 @@ void LinkedList<DT>::add(DT* newVal)
 	//Construct a new node
 	LinkedListNode* newNode = new LinkedListNode;
 	newNode->next = NULL;
-	newNode->data = new DT[1];
+	//newNode->data = new DT[1];
+	newNode->data = (DT*)malloc(sizeof(DT));
 	mem_cpy(newVal, newNode->data, sizeof(DT));
 
 	//increment the length
@@ -220,3 +222,4 @@ void LinkedList<DT>::reverse()
 	//Set head to the last node
 	this->head = prev;	
 }
+#endif

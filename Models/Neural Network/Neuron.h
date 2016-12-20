@@ -1,7 +1,10 @@
 /*Author: Austin Graham*/
-#include<ctime>
-#include<cstdlib>
+#ifndef NEURON_H
+#define NEURON_H
+#include"../../random.h"
 #include<cmath>
+#include<iostream>
+using namespace std;
 
 /*Class representing a single Neuron in an ANN*/
 class Neuron
@@ -17,6 +20,20 @@ public:
 	double getLastActivation();
 	//Get the current weights of this Neuron
 	double* getWeights();
+	//Output Neuron data
+	friend ostream& operator<<(ostream& os, const Neuron& n)
+	{
+		os<<"Neuron size: "<<n.size<<endl;
+		os<<"Input weights:"<<endl;
+		for(int i = 0; i < n.size; i++)
+		{
+			cout<<n.weights[i]<<endl;
+		}
+		os<<"Most recent activation:"<<endl;
+		os<<n.recentActivation<<endl;
+		os<<"*********************"<<endl;
+		return os;
+	}
 private:
 	//The most recent activation
 	double recentActivation;
@@ -26,20 +43,29 @@ private:
 	int size;
 	//Calculate sigmoid function on value t
 	double sigmoid(double t);
+	//Random weight generator
+	static Random* r;
 };
+
+//Construct random generator
+Random* Neuron::r = new Random();
 
 /*Construct a Neuron with a given number of inputs*/
 Neuron::Neuron(int numInputs)
 {
+
 	//Initialize the weights randomly between -1 and 1
 	weights = new double[numInputs];
 	for(int i = 0; i < numInputs; i++)
 	{
-		weights[i] = ((double)rand() / RAND_MAX) * 2.0 - 1.0;
+		weights[i] = Neuron::r->random_num(-1.0, 1.0);
 	}
 
 	//Set the size
-	this->size = weights;
+	this->size = numInputs;
+	
+	//Set most recent activation to 0
+	this->recentActivation = 0;
 }
 
 /*Deconstruct the Neuron*/
@@ -60,7 +86,7 @@ double Neuron::getCurrentActivation(double* inputs, double bias)
 	}
 		
 	//Add bias and get the sigmoid
-	activation += bias
+	activation += bias;
 	activation = sigmoid(activation);
 
 	this->recentActivation = activation;
@@ -82,5 +108,6 @@ double* Neuron::getWeights()
 /*Sigmoid function*/
 double Neuron::sigmoid(double t)
 {
-	return 1 / (1 + exp(-t)));
+	return 1 / (1 + exp(-t));
 }
+#endif

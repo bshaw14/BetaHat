@@ -1,3 +1,6 @@
+#ifndef MEM_H
+#define MEM_H
+#include<cstdlib>
 /*Copies bytes directly from a source to a destination*/
 void mem_cpy(const void* source, void* dest, size_t numBytes)
 {
@@ -11,3 +14,4 @@ void mem_cpy(const void* source, void* dest, size_t numBytes)
 		*byteDest++ = *byteSource++;
 	}
 }
+#endif

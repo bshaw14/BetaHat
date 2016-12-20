@@ -1,20 +1,18 @@
+/*Author: Austin Graham*/
 #include<iostream>
-#include"Structures/Stack.h"
+#include"Models/Neural Network/NeuralNetwork.h"
+#include"random.h"
 using namespace std;
 
 int main()
 {
-	Stack<int>* s = new Stack<int>();
-	for(int i = 0; i < 10; i++)
-	{
-		s->push(&i);
-	}
-	cout<<"Top of list: "<<s->peek()<<endl;
-	int maxSize = s->getSize();
-	for(int i = 0; i < maxSize; i++)
-	{
-		cout<<s->pop()<<endl;
-	}
-	delete s;
+	int layers[] = {2,3,1};
+	NeuralNetwork* nn = new NeuralNetwork(layers, 3);
+	double inputs[] = {3.0, 4.0};
+	double* outputs = nn->feedForward(inputs);
+	cout<<"Outputs: "<<endl;
+	cout<<outputs[0]<<endl;
+	cout<<(*nn)<<endl;
+	delete nn;
 	return 0;
 }
