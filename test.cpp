@@ -13,6 +13,8 @@ int main()
 	cout<<"Outputs: "<<endl;
 	cout<<outputs[0]<<endl;
 	cout<<(*nn)<<endl;
+	double expected[] = {1};
+	nn->backPropogate(expected);
 	delete nn;
 	return 0;
 }

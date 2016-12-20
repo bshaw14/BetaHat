@@ -17,7 +17,8 @@ protected:
 	LinkedList<Neuron>* neurons;
 	int size;
 	double bias;
-	double* deltas;
+	double* savedDeltas;
+	int inputSize;
 	static Random* r;
 };
 
@@ -27,17 +28,18 @@ Layer::Layer(int size, int prevLayerSize)
 {
 	this->neurons = new LinkedList<Neuron>();
 	this->size = size;
+	this->inputSize = prevLayerSize;
 	for(int i = 0; i < this->size; i++)
 	{
 		this->neurons->add(new Neuron(prevLayerSize));
 	}
 	this->bias = Layer::r->random_num(-1.0, 1.0);
-	this->deltas = new double[size];
+	this->savedDeltas = new double[size];
 }
 
 Layer::~Layer()
 {
-	delete [] deltas;
+	delete [] savedDeltas;
 	delete neurons;
 }
 

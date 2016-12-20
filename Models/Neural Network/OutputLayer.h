@@ -25,6 +25,21 @@ public:
 
 double* OutputLayer::backPropogate(double* expectedOutputs)
 {
-	return NULL;
+	int deltaSize = this->size * this->inputSize;
+	double* deltas = new double[deltaSize];
+	for(int i = 0; i < this->size; i++)
+	{
+		double lastActivation = (*this->neurons)[i].getLastActivation();
+		savedDeltas[i] = (lastActivation - expectedOutputs[i])*(1 - lastActivation)*lastActivation;
+	}
+
+	for(int i = 0; i < this->size; i++)
+	{
+		for(int j = 0; j< this->inputSize; j++)
+		{
+			deltas[i*j + j] = savedDeltas[i] * (*this->neurons)[i].getWeights()[j];		
+		}
+	}
+	return deltas;
 }
 #endif

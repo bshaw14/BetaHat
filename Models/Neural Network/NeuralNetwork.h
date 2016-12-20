@@ -14,6 +14,7 @@ public:
 	NeuralNetwork(int* layers, int numOfLayers);
 	~NeuralNetwork();
 	double* feedForward(double* inputs);
+	void backPropogate(double* expectedOutputs);
 	friend ostream& operator<<(ostream& os, const NeuralNetwork& nn)
 	{
 		os<<"\tNEURAL NETWORK"<<endl;
@@ -57,5 +58,14 @@ double* NeuralNetwork::feedForward(double* inputs)
 	}
 	nextFeedInput = (*outputLayer).feed(nextFeedInput);
 	return nextFeedInput;
+}
+
+void NeuralNetwork::backPropogate(double* expectedOutputs)
+{
+	double* deltas = outputLayer->backPropogate(expectedOutputs);
+	for(int i = 0; i< 3; i++)
+	{
+		cout<<deltas[i]<<endl;
+	}
 }
 #endif
