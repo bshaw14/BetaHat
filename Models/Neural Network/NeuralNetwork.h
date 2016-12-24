@@ -63,9 +63,18 @@ double* NeuralNetwork::feedForward(double* inputs)
 void NeuralNetwork::backPropogate(double* expectedOutputs)
 {
 	double* deltas = outputLayer->backPropogate(expectedOutputs);
-	for(int i = 0; i< 3; i++)
+	for(int i = this->layers->getLength() - 1; i >= 0; i--)
 	{
-		cout<<deltas[i]<<endl;
+		if(i == this->layers->getLength() - 1)
+		{
+			deltas = (*this->layers)[i].backPropogate(deltas, (Layer*)outputLayer);
+			for(int j = 0; j < 6; j++)
+			{
+				cout<<deltas[j]<<endl;
+			}
+		}
+		else
+			deltas = (*this->layers)[i].backPropogate(deltas, (Layer*)(&(*this->layers)[i+1]));
 	}
 }
 #endif

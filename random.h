@@ -13,7 +13,7 @@ public:
 
 Random::Random()
 {
-	srand(time(NULL));
+	srand(10);
 }
 
 Random::~Random() {}

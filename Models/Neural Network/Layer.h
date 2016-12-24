@@ -13,6 +13,7 @@ public:
 	~Layer();
 	int getSize();
 	double* feed(double* activations);
+	Neuron& operator[](int index);
 protected:
 	LinkedList<Neuron>* neurons;
 	int size;
@@ -34,7 +35,7 @@ Layer::Layer(int size, int prevLayerSize)
 		this->neurons->add(new Neuron(prevLayerSize));
 	}
 	this->bias = Layer::r->random_num(-1.0, 1.0);
-	this->savedDeltas = new double[size];
+	this->savedDeltas = new double[size * prevLayerSize];
 }
 
 Layer::~Layer()
@@ -56,5 +57,10 @@ double* Layer::feed(double* prevActivations)
 int Layer::getSize()
 {
 	return this->size;
+}
+
+Neuron& Layer::operator[](int index)
+{
+	return (*neurons)[index];
 }
 #endif
