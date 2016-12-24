@@ -9,7 +9,7 @@ class OutputLayer : public Layer
 public:
 	OutputLayer(int size, int prevLayerSize) : Layer(size, prevLayerSize){}
 	~OutputLayer(){}
-	double* backPropogate(double* expectedOutputs);
+	double* backPropogate(double* expectedOutputs, Layer* prevLayer);
 	friend ostream& operator<<(ostream& os, const OutputLayer& o)
 	{
 		os<<"OUTPUT LAYER:"<<endl;
@@ -24,7 +24,7 @@ public:
 	}
 };
 
-double* OutputLayer::backPropogate(double* expectedOutputs)
+double* OutputLayer::backPropogate(double* expectedOutputs, Layer* prevLayer)
 {
 	double* deltas = new double[this->size];
 	for(int i = 0; i < this->size; i++)
@@ -37,7 +37,8 @@ double* OutputLayer::backPropogate(double* expectedOutputs)
 	{
 		for(int j = 0; j< this->inputSize; j++)
 		{
-			savedDeltas[i*this->inputSize + j] = deltas[i] * (*this->neurons)[i].getWeights()[j];		
+			//savedDeltas[i*this->inputSize + j] = deltas[i] * (*this->neurons)[i].getWeights()[j];
+			savedDeltas[i*this->inputSize + j] = deltas[i] * (*prevLayer)[j].getLastActivation();		
 		}
 	}
 	delete deltas;

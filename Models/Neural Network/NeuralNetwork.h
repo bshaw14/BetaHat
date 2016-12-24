@@ -14,7 +14,7 @@ public:
 	NeuralNetwork(int* layers, int numOfLayers);
 	~NeuralNetwork();
 	double* feedForward(double* inputs);
-	void backPropogate(double* expectedOutputs);
+	void backPropogate(double* expectedOutputs, double* inputs);
 	friend ostream& operator<<(ostream& os, const NeuralNetwork& nn)
 	{
 		os<<"\tNEURAL NETWORK"<<endl;
@@ -60,21 +60,29 @@ double* NeuralNetwork::feedForward(double* inputs)
 	return nextFeedInput;
 }
 
-void NeuralNetwork::backPropogate(double* expectedOutputs)
+void NeuralNetwork::backPropogate(double* expectedOutputs, double* inputs)
 {
-	double* deltas = outputLayer->backPropogate(expectedOutputs);
+	double* deltas = outputLayer->backPropogate(expectedOutputs, (Layer*)(&(*this->layers)[this->layers->getLength() - 1]));
 	for(int i = this->layers->getLength() - 1; i >= 0; i--)
 	{
 		if(i == this->layers->getLength() - 1)
 		{
-			deltas = (*this->layers)[i].backPropogate(deltas, (Layer*)outputLayer);
-			for(int j = 0; j < 6; j++)
-			{
-				cout<<deltas[j]<<endl;
-			}
+			if(i!=0)
+				deltas = (*this->layers)[i].backPropogate(deltas, (Layer*)outputLayer, (Layer*)(&(*this->layers)[i-1]));
+			else
+				deltas = (*this->layers)[i].backPropogateAgainstInput(deltas, (Layer*)outputLayer, inputs);
 		}
 		else
-			deltas = (*this->layers)[i].backPropogate(deltas, (Layer*)(&(*this->layers)[i+1]));
+		{
+			if(i!=0)
+				deltas = (*this->layers)[i].backPropogate(deltas, (Layer*)(&(*this->layers)[i+1]), (Layer*)(&(*this->layers)[i-1]));
+			else
+				deltas = (*this->layers)[i].backPropogateAgainstInput(deltas, (Layer*)(&(*this->layers)[i+1]), inputs);
+		}
 	}
+
+	outputLayer->adjust();
+	for(int i = 0; i < this->layers->getLength(); i++)
+		(*this->layers)[i].adjust();
 }
 #endif

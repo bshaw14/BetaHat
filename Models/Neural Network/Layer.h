@@ -14,6 +14,7 @@ public:
 	int getSize();
 	double* feed(double* activations);
 	Neuron& operator[](int index);
+	void adjust();
 protected:
 	LinkedList<Neuron>* neurons;
 	int size;
@@ -21,6 +22,8 @@ protected:
 	double* savedDeltas;
 	int inputSize;
 	static Random* r;
+private:
+	double learningConstant;
 };
 
 Random* Layer::r = new Random();
@@ -36,6 +39,7 @@ Layer::Layer(int size, int prevLayerSize)
 	}
 	this->bias = Layer::r->random_num(-1.0, 1.0);
 	this->savedDeltas = new double[size * prevLayerSize];
+	this->learningConstant = 1.0;
 }
 
 Layer::~Layer()
@@ -62,5 +66,16 @@ int Layer::getSize()
 Neuron& Layer::operator[](int index)
 {
 	return (*neurons)[index];
+}
+
+void Layer::adjust()
+{
+	for(int i = 0; i < this->size; i++)
+	{
+		for(int j = 0; j < this->inputSize; j++)
+		{
+			(*this->neurons)[i].getWeights()[j] += learningConstant * savedDeltas[i*this->inputSize + j];
+		}
+	}
 }
 #endif
