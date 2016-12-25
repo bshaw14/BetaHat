@@ -62,27 +62,25 @@ double* NeuralNetwork::feedForward(double* inputs)
 
 void NeuralNetwork::backPropogate(double* expectedOutputs, double* inputs)
 {
-	double* deltas = outputLayer->backPropogate(expectedOutputs, (Layer*)(&(*this->layers)[this->layers->getLength() - 1]));
+	double* deltas = outputLayer->backPropogate(expectedOutputs);
 	for(int i = this->layers->getLength() - 1; i >= 0; i--)
 	{
+		
 		if(i == this->layers->getLength() - 1)
 		{
-			if(i!=0)
-				deltas = (*this->layers)[i].backPropogate(deltas, (Layer*)outputLayer, (Layer*)(&(*this->layers)[i-1]));
-			else
-				deltas = (*this->layers)[i].backPropogateAgainstInput(deltas, (Layer*)outputLayer, inputs);
+			deltas = (*this->layers)[i].backPropogate(deltas, (Layer*)outputLayer);
 		}
 		else
 		{
-			if(i!=0)
-				deltas = (*this->layers)[i].backPropogate(deltas, (Layer*)(&(*this->layers)[i+1]), (Layer*)(&(*this->layers)[i-1]));
-			else
-				deltas = (*this->layers)[i].backPropogateAgainstInput(deltas, (Layer*)(&(*this->layers)[i+1]), inputs);
+			deltas = (*this->layers)[i].backPropogate(deltas, (Layer*)(&(*this->layers)[i+1]));
 		}
 	}
 
-	outputLayer->adjust();
-	for(int i = 0; i < this->layers->getLength(); i++)
-		(*this->layers)[i].adjust();
-}
+	outputLayer->adjust((&(*this->layers)[this->layers->getLength() - 1]));
+	for(int i = this->layers->getLength() - 1; i>=1; i--)
+	{
+		(*this->layers)[i].adjust((&(*this->layers)[i-1]));
+	}
+	(*this->layers)[0].adjustWithInputs(inputs);
+}	
 #endif

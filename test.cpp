@@ -27,9 +27,9 @@ int main()
 		{
 			double* results = nn->feedForward(observations[i]);
 			double out = (results[0] >= .5) ? 1 : 0;
-			cout<<"Cost: "<<.5*(expected[i][0] - results[0])*(expected[i][0] - results[0])<<endl;
-			/*cout<<"********\nInput: "<<observations[i][0]<<", "<<observations[i][1]<<endl;
-			cout<<"Results: "<<results[0]<<endl<<"********"<<endl;*/
+			//cout<<"Cost: "<<.5*(expected[i][0] - results[0])*(expected[i][0] - results[0])<<endl;
+			cout<<"********\nInput: "<<observations[i][0]<<", "<<observations[i][1]<<endl;
+			cout<<"Results: "<<out<<endl<<"********"<<endl;
 			nn->backPropogate(expected[i], observations[i]);
 		}
 	}
