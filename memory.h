@@ -1,3 +1,4 @@
+/*Author: Austin Graham*/
 #ifndef MEM_H
 #define MEM_H
 #include<cstdlib>
