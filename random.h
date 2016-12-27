@@ -17,7 +17,7 @@ public:
 Random::Random()
 {
 	//Seed the random
-	srand(10);
+	srand(time(NULL));
 }
 
 Random::~Random() {}

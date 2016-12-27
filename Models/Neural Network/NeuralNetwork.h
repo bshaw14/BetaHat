@@ -5,15 +5,16 @@
 #include"OutputLayer.h"
 #include"HiddenLayer.h"
 #include"../../Structures/LinkedList.h"
+#include"../BaseModel.h"
 
 using namespace std;
 
 /*Encapsulates a Neural Network object*/
-class NeuralNetwork
+class NeuralNetwork : public SupervisedModel
 {
 public:
 	//Create the network with specified Layers
-	NeuralNetwork(int* layers, int numOfLayers);
+	NeuralNetwork(int* layers, int numOfLayers, long id);
 	//Destroy Network
 	~NeuralNetwork();
 	//Feed input through the network
@@ -32,6 +33,10 @@ public:
 		os<<(*nn.outputLayer)<<endl;
 		return os;
 	}
+	//Train the model. This behavior will be determined when TrainingSet class is done
+	void Train(int epochs);
+	//Classify input, masking ANN vocabulary
+	double* Classify(double* inputs);
 private:
 	//Hidden layers in the network
 	LinkedList<HiddenLayer>* layers;
@@ -42,7 +47,7 @@ private:
 };
 
 /*Construct a Neural Network*/
-NeuralNetwork::NeuralNetwork(int* layers, int numOfLayers)
+NeuralNetwork::NeuralNetwork(int* layers, int numOfLayers, long id) : SupervisedModel(id) 
 {
 	//Create the list of layers and set the input size
 	this->layers = new LinkedList<HiddenLayer>();
@@ -104,5 +109,17 @@ void NeuralNetwork::backPropogate(double* expectedOutputs, double* inputs)
 		(*this->layers)[i].adjust((&(*this->layers)[i-1]));
 	}
 	(*this->layers)[0].adjustWithInputs(inputs);
+}
+
+/*Train the model. This will be fully defined later*/
+void NeuralNetwork::Train(int epochs)
+{
+ 	//TODO
 }	
+
+/*Classify input*/
+double* NeuralNetwork::Classify(double* inputs)
+{
+	return this->feedForward(inputs);
+}
 #endif
