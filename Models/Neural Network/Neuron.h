@@ -20,6 +20,8 @@ public:
 	double getLastActivation();
 	//Get the current weights of this Neuron
 	double* getWeights();
+	//Get size 
+	int getSize();
 	//Output Neuron data
 	friend ostream& operator<<(ostream& os, const Neuron& n)
 	{
@@ -109,5 +111,11 @@ double* Neuron::getWeights()
 double Neuron::sigmoid(double t)
 {
 	return 1 / (1 + exp(-t));
+}
+
+/*Get size*/
+int Neuron::getSize()
+{
+	return this->size;
 }
 #endif
