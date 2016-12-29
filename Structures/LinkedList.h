@@ -27,6 +27,8 @@ public:
 	int getLength();
 	//Reverse the list
 	void reverse();
+	//Find an element int the list
+	int find(DT val);
 private:
 	//Structure of each node in the list
 	struct LinkedListNode
@@ -221,5 +223,16 @@ void LinkedList<DT>::reverse()
 
 	//Set head to the last node
 	this->head = prev;	
+}
+
+/*Find an element in the list*/
+template<class DT>
+int LinkedList<DT>::find(DT val)
+{
+	for(int i = 0; i < this->length; i++)
+	{
+		if((*this)[i] == val) return i;
+	}
+	return -1;
 }
 #endif

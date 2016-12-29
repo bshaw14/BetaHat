@@ -24,7 +24,7 @@ public:
 	DT* getRow(int row);
 	//Get an entire column
 	DT* getColumn(int column);
-private:
+protected:
 	//Initialize matrix
 	void init(int rows, int columns);
 	//Hold the data
