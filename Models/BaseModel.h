@@ -1,6 +1,7 @@
 /*Author: Austin Graham*/
 #ifndef BASE_H
 #define BASE_H
+#include"../Structures/TrainingSet.h"
 /*Defines the very base Model class, which will contain an ID for use
 in web API*/
 class Model
@@ -38,7 +39,7 @@ public:
 	//Destruct this model
 	virtual ~SupervisedModel() {}
 	//Train the model: to be defined in concrete classes
-	virtual void Train(int epochs) = 0;
+	virtual void Train(int epochs, TrainingSet* tSet, void (*normalize)(double* outputs, int count)) = 0;
 	//Classify inputs on this model: to be defined in concrete classes
 	virtual double* Classify(double* inputs) = 0;
 	//Get the success rate of this model on validation set

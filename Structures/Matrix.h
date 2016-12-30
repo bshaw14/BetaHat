@@ -59,6 +59,8 @@ Matrix<DT>::Matrix(int rows, int columns, DT base)
 	}
 }
 
+#ifndef MATRIX_H
+#define MATRIX_H
 /*Make a deep copy of an existing matrix*/
 template <class DT>
 Matrix<DT>::Matrix(Matrix* m)
@@ -188,3 +190,4 @@ void Matrix<DT>::init(int rows, int columns)
 		this->data[i] = new DT[columns];
 	}
 }
+#endif

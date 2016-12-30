@@ -33,8 +33,8 @@ public:
 		os<<(*nn.outputLayer)<<endl;
 		return os;
 	}
-	//Train the model. This behavior will be determined when TrainingSet class is done
-	void Train(int epochs);
+	//Train the model.
+	void Train(int epochs, TrainingSet* tSet, void (*normalize)(double* outputs, int count));
 	//Classify input, masking ANN vocabulary
 	double* Classify(double* inputs);
 private:
@@ -111,10 +111,46 @@ void NeuralNetwork::backPropogate(double* expectedOutputs, double* inputs)
 	(*this->layers)[0].adjustWithInputs(inputs);
 }
 
-/*Train the model. This will be fully defined later*/
-void NeuralNetwork::Train(int epochs)
+/*Train the model*/
+void NeuralNetwork::Train(int epochs, TrainingSet* tSet, void (*normalize)(double* outputs, int count))
 {
- 	//TODO
+	//Repeat back prop process for the number of epochs given by user
+ 	for(int i = 0; i < epochs; i++)
+	{
+		//randomize the training set
+		tSet->randomize();
+		//split the data
+		tSet->splitData();
+		//Get the needed data from the training set
+		Matrix<double>* inputs = tSet->getTrainingSetInput();
+		Matrix<double>* outputs = tSet->getTrainingSetOutput();
+		//Perform training process
+		for(int j = 0; j < inputs->getRows(); j++)
+		{
+			double* networkOut = this->feedForward(inputs->getRow(j));
+			this->backPropogate(outputs->getRow(j), inputs->getRow(j));
+		}
+	}
+
+	//test the new model
+	int countCorrect = 0;
+	Matrix<double>* testInputs = tSet->getTestSetInput();
+	Matrix<double>* testOutputs = tSet->getTestSetOutput();
+	for(int i = 0; i < testInputs->getRows(); i++)
+	{
+		//Feed the model and check against given outputs
+		double* networkOut = this->feedForward(testInputs->getRow(i));
+		normalize(networkOut, outputLayer->getSize());
+		double* testVals = testOutputs->getRow(i);
+		bool isCorrect = networkOut[0] == testVals[0];
+		for(int j = 1; j < this->outputLayer->getSize(); j++)
+		{
+			isCorrect &= networkOut[j] == testVals[j];
+		}
+		if(isCorrect) countCorrect++;
+	}
+	//Update the success rate
+	this->successRate = countCorrect / (double)testOutputs->getRows();
 }	
 
 /*Classify input*/

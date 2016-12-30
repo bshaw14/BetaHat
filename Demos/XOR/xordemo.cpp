@@ -2,40 +2,36 @@
 #include<iostream>
 #include"../../Models/Neural Network/NeuralNetwork.h"
 #include"../../random.h"
+#include"../../Structures/TrainingSet.h"
 using namespace std;
+
+void normalize(double* vals, int count)
+{
+	for(int i = 0; i < count; i++)
+	{
+		vals[i] = (vals[i] >= .5) ? 1 : 0;
+	}
+}
 
 int main()
 {
 	cout<<"Building training data..."<<endl;
 	Random r;
-	double** observations = new double*[100];
-	double** expected = new double*[100];
+	TrainingSet* tr = new TrainingSet(2,1,100);
 	for(int i = 0; i< 100; i++)
 	{
-		observations[i] = new double[2];
-		observations[i][0] = (r.random_num(0,1) >= .5) ? 1: 0;
-		observations[i][1] = (r.random_num(0,1) >= .5) ? 1: 0;
-		expected[i] = new double[1];
-		expected[i][0] = (int)observations[i][0] ^ (int)observations[i][1];
+		double input[] = {(r.random_num(0,1) >= .5) ? 1: 0,(r.random_num(0,1) >= .5) ? 1: 0};
+		double output[] = {(int)input[0] ^ (int)input[1]};
+		tr->addObservation(input, output);
 	}	
 
 	cout<<"Training network..."<<endl;
 	int layers[] = {2,6,3,1};
 	NeuralNetwork* nn = new NeuralNetwork(layers, 4, 15);
-	for(int k = 0; k < 500; k++)
-	{
-		for(int i = 0; i < 100; i++)
-		{
-			double* results = nn->feedForward(observations[i]);
-			double out = (results[0] >= .5) ? 1 : 0;
-			//cout<<"Cost: "<<.5*(expected[i][0] - results[0])*(expected[i][0] - results[0])<<endl;
-			//cout<<"********\nInput: "<<observations[i][0]<<", "<<observations[i][1]<<endl;
-			//cout<<"Results: "<<out<<endl<<"********"<<endl;
-			nn->backPropogate(expected[i], observations[i]);
-		}
-	}
+	nn->Train(100, tr, normalize);
 	cout<<"Trained."<<endl;
 	cout<<"Network ID: "<<nn->getID()<<endl;
+	cout<<"Network Success Rate: "<<nn->getSuccessRate()*100<<"%"<<endl;
 
 	double x = 0;
 	double y = 0;
@@ -56,12 +52,6 @@ int main()
 	}
 
 	cout<<"Cleaning up..."<<endl;
-	for(int i = 0; i < 100; i++)
-	{
-		delete [] observations[i];
-	}
-	delete [] observations;
-	delete [] expected;
 	delete nn;
 	cout<<"Done."<<endl;
 
