@@ -11,6 +11,8 @@ class LinkedList
 public:
 	//Constructor
 	LinkedList();
+	//Copy Constructor
+	LinkedList(LinkedList* old);
 	//Destructor
 	~LinkedList();
 	//Add at the end of the list
@@ -48,6 +50,18 @@ LinkedList<DT>::LinkedList()
 {
 	this->length = 0;
 	this->head = NULL;
+}
+
+/*Get a copy of the current list*/
+template<class DT>
+LinkedList<DT>::LinkedList(LinkedList* old)
+{
+	this->length = 0;
+	this->head = NULL;
+	for(int i = 0; i < old->getLength(); i++)
+	{
+		this->add(&(*old)[i]);
+	}
 }
 
 /*Deconstruct the list*/

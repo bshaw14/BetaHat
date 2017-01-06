@@ -2,6 +2,7 @@
 #include<iostream>
 #include<fstream>
 #include"../../Models/Neural Network/NeuralNetwork.h"
+#include"../../Structures/TrainingSet.h"
 using namespace std;
 
 int TOTAL_ELEMENTS;
@@ -112,6 +113,14 @@ double** normalizeImages(int** images)
 	return newImages;
 }
 
+void normalize(double* output, int count)
+{
+	for(int i = 0; i < count; i++)
+	{
+		output[i] = (output[i] >= .5) ? 1.0 : 0.0;
+	}
+}
+
 int main()
 {
 	cout<<"Reading label file..."<<endl;
@@ -130,13 +139,15 @@ int main()
 	NeuralNetwork* nn = new NeuralNetwork(layers, 3, 199);
 	cout<<"Network ID: "<<nn->getID()<<endl;
 	
-	cout<<"Training..."<<endl;
+	cout<<"Adding observations..."<<endl;
+	TrainingSet* tr = new TrainingSet(ROWS*COLUMNS, 3, TOTAL_ELEMENTS);
 	for(int i = 0; i < TOTAL_ELEMENTS; i++)
 	{
-		cout<<i<<endl;
-		double* output = nn->feedForward(normalizedImages[i]);
-		nn->backPropogate(asBinary[i], normalizedImages[i]);
+		tr->addObservation(normalizedImages[i], asBinary[i]);
 	}
+	cout<<"All observations added..."<<endl;
+	cout<<"Training..."<<endl;
+	nn->Train(1, tr, normalize);
 	cout<<"Trained"<<endl;
 
 

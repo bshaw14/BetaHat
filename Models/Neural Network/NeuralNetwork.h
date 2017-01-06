@@ -124,6 +124,7 @@ void NeuralNetwork::Train(int epochs, TrainingSet* tSet, void (*normalize)(doubl
 		//Get the needed data from the training set
 		Matrix<double>* inputs = tSet->getTrainingSetInput();
 		Matrix<double>* outputs = tSet->getTrainingSetOutput();
+		//cout<<*outputs<<endl;
 		//Perform training process
 		for(int j = 0; j < inputs->getRows(); j++)
 		{
@@ -140,6 +141,7 @@ void NeuralNetwork::Train(int epochs, TrainingSet* tSet, void (*normalize)(doubl
 	{
 		//Feed the model and check against given outputs
 		double* networkOut = this->feedForward(testInputs->getRow(i));
+		//cout<<testInputs->getRow(i)[0]<<"^"<<testInputs->getRow(i)[1]<<"="<<networkOut[0]<<endl;
 		normalize(networkOut, outputLayer->getSize());
 		double* testVals = testOutputs->getRow(i);
 		bool isCorrect = networkOut[0] == testVals[0];

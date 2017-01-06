@@ -1,4 +1,6 @@
 /*Author: Austin Graham*/
+#include<iostream>
+using namespace std;
 /*Class representing the matrix data structure*/
 template <class DT>
 class Matrix
@@ -24,6 +26,21 @@ public:
 	DT* getRow(int row);
 	//Get an entire column
 	DT* getColumn(int column);
+	//View matrix
+	friend ostream& operator<<(ostream& os, const Matrix& m)
+	{
+		os<<"Rows: "<<m.rows<<endl;
+		os<<"Columns: "<<m.columns<<endl;
+		for(int i = 0; i < m.rows; i++)
+		{
+			for(int j = 0; j < m.columns; j++)
+			{
+				os<<m.data[i][j]<<" ";
+			}
+			os<<endl;
+		}
+		return os;
+	}
 protected:
 	//Initialize matrix
 	void init(int rows, int columns);

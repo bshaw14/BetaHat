@@ -9,6 +9,18 @@ class TrainingSet
 {
 public:
 	TrainingSet(int featureLength, int outputLength, int numberOfObservations);
+	TrainingSet(TrainingSet* old)
+	{
+		inputData = new Matrix<double>(old->inputData);
+		expectedData = new Matrix<double>(old->expectedData);
+		nextAvailable = old->nextAvailable;
+		ratio = old->ratio;
+		trainingSet = new LinkedList<int>(old->trainingSet);
+		testSet = new LinkedList<int>(old->testSet);
+		r = old->r;
+		featureLength = old->featureLength;
+		outputLength = old->outputLength;
+	}
 	virtual ~TrainingSet();
 	void setRatio(double split);
 	void splitData();
@@ -25,7 +37,7 @@ protected:
 	double ratio;
 	LinkedList<int>* trainingSet;
 	LinkedList<int>* testSet;
-	Random* r;	
+	Random r;	
 	int featureLength;
 	int outputLength;
 	void reset();
@@ -36,7 +48,7 @@ TrainingSet::TrainingSet(int featureLength, int outputLength, int numberOfObserv
 	inputData = new Matrix<double>(numberOfObservations, featureLength, -1);
 	expectedData = new Matrix<double>(numberOfObservations, outputLength, -1);
 	ratio = .3;
-	r = new Random();
+	//r = new Random();
 	trainingSet = new LinkedList<int>();
 	testSet = new LinkedList<int>();
 	for(int i = 0; i< numberOfObservations; i++)
@@ -67,12 +79,8 @@ void TrainingSet::splitData()
 	int testSetSize = trainingSet->getLength() * ratio;
 	for(int i = 0; i < testSetSize; i++)
 	{
-		int newRow = r->random_num(0, inputData->getRows() - 1);
-		while(testSet->find(newRow) != -1)
-		{
-			newRow = r->random_num(0,inputData->getRows() - 1);
-		}
-		int toAdd = trainingSet->removeAt(trainingSet->find(newRow));
+		int newRow = r.random_num(0, trainingSet->getLength() - 1);
+		int toAdd = trainingSet->removeAt(newRow);
 		testSet->add(&toAdd);
 	}
 }
@@ -98,7 +106,7 @@ void TrainingSet::randomize()
 	LinkedList<int>* randomList = new LinkedList<int>();
 	for(int i = 0; i < inputData->getRows(); i++)
 	{
-		int newRow = r->random_num(0, trainingSet->getLength() - 1);
+		int newRow = r.random_num(0, trainingSet->getLength() - 1);
 		int toAdd = trainingSet->removeAt(newRow);
 		randomList->add(&toAdd);
 	}
